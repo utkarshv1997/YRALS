@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="js/jquery-ui/jquery-ui.min.js"></script>
+    <title>PREVIEW</title>
+    <link type="text/javascript" src="js/jquery-ui/jquery-ui.min.css"></script>
+    <link rel="stylesheet" href="css/preview.css">
+
+</head>
+<body>
+
+      <div id="img_canvas" style="margin-left: 420px;margin-top: 10px;z-index: 1;background-color:black; height:406px; width:720px;position: absolute;background-image: url('images/img_test2.jpg');">
+          <img id="gif1" style="z-index: 5;width: 720px; height: auto;" src="http://api3.gistai.com/Intro-Outro/aston/Roadies/yellow2.png">
+          <img id="image1" style="z-index: 10;border: 2px solid #000000;" src="">
+      </div>
+
+    <div class="main-content" style="margin-left:10px;">
+
+        <form class="form-labels-on-top" style="margin: 0px; max-width: 400px;">
+
+            <div class="form-title-row">
+                <h1>GET IMAGE</h1>
+            </div>
+
+
+            <div class="form-row">
+                <button type="button" id="sub">Submit Form</button>
+            </div>
+
+            <div class="form-row">
+                <label>
+                    <span>Enter name of file</span>
+                    <input type="text" name="file_name" id="file_name">
+                </label>
+            </div>
+
+            <div class="form-row">
+                <label>
+                    <span>Select Type Case</span>
+                    <select id="text_case"> 
+                        <option value="1" selected>custom</option>
+                        <option value="2">lower</option>
+                        <option value="3">upper</option>
+                        <option value="4">title</option>
+                    </select>
+                </label>
+            </div>
+
+            <div class="form-row">
+				<label>
+					<span>Select Aspect Ratio</span>
+					<select id="aspect_ratio">
+						<option value="16:9" selected>16:9</option>
+						<option value="9:16">9:16</option>
+						<option value="4:3">4:3</option>
+						<option value="3:4">3:4</option>
+						<option value="1:1">1:1</option> 
+					</select>
+				</label>
+			</div>
+
+			<div class="form-row">
+				<label>
+					<span>Select Resolution Type</span>
+					<select id="res">
+						<option value="1" selected>SD</option>
+						<option value="2">HD</option>
+						<option value="3">SHD</option>
+					</select>
+				</label>
+			</div>
+
+            <div class="form-row">
+                <label>
+                    <span>Select Canvas width(in percent)</span>
+                    <input type="number" id="canvas_size_width" step="0.1" value="0.0" style="width: 100px;" id="canvas_size">%
+                </label>
+            </div>
+
+            <div class="form-row">
+                <label>
+                    <span>Select Text Canvas height(in percent)</span>
+                    <input type="number" id="canvas_size_height" step="0.1" value="0.0" style="width: 100px;" id="canvas_size">%
+                </label>
+            </div>
+
+            <div class="form-row">
+                <label>
+                    <span>Select Text Align</span>
+                    <select name="text_align" id="text_align">
+                        <option selected>left</option> 
+                        <option>right</option>
+                        <option>center</option>
+                    </select>
+                </label>
+            </div>
+
+            <div class="form-row">
+                <label>
+                    <span>Select Padding(in percent)</span>
+                    <input id="text_padding" type="number" name="text_padding" step="0.1" value="0.0" style="width: 100px;">%
+                </label>
+            </div>
+
+            <div class="form-row">
+                <label>
+                    <span>Select Max Line</span>
+                    <input id="max_line" type="number" name="max_line" step="1" value="0" style="width: 100px;">
+                </label>
+            </div>
+
+            <div class="form-row">
+                <label>
+                    <span>Select get between two lines</span>
+                    <input id="get_between_lines" type="number" name="between_two_lines" step="1" value="0" style="width: 100px;">px
+                </label>
+            </div>
+
+            <div class="form-row">
+                <label><span>Select bgyn</span></label>
+                <div class="form-radio-buttons">
+
+                    <div>
+                        <label>
+                            <input type="radio" name="radio" onclick="handleClick1(this)" value="yes"/>
+                            <span>yes</span>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>
+                            <input type="radio" name="radio" onclick="handleClick2(this)" value="no"/>
+                            <span>no</span>
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="bgtype" class="form-row" style="display: none;">
+                <label>
+                    <span>Select BgType</span>
+                    <select id="bgselect" name="bgtype" onclick="handleClick3(this)" value="">
+                        <option value="color" selected>color</option> 
+                        <option value="image">image</option>
+                        <option value="video">video</option>
+                    </select>
+                </label>
+            </div>
+
+            <div class="form-row" id="vurl" style="display: none;">    
+                <label>
+                    <span>provide video url</span>
+                    <input type="url" name="bgvideo" id="video">
+                </label>
+            </div> 
+
+            <div class="form-row" id="iurl" style="display: none;">    
+                <label>
+                    <span>provide image url</span>
+                    <input type="url" name="bgvideo" id="image">
+                </label>
+            </div>
+
+            <div class="form-row" id="col" style="display: none;" >    
+                <label>
+                    <span>provide color rgba</span>
+                    <input id="color" type="color" name="favcolor" value="#3355cc" style="height: 100px;width: 100px;">
+                </label>
+            </div>
+
+            <div class="form-row">
+                <label>
+                    <span>provide text to be shown</span>
+                    <input id="text_val" type="text" name="textToBeShown">
+                </label>
+            </div>
+
+            <div class="form-row">
+                <label>
+                    <span>Font Size</span>
+                    <input id="font_size" type="number" name="font_size" value="20" step="1">
+                </label>
+            </div>
+
+            <div class="form-row">
+				<label>
+					<span>Choose Font</span>
+					<select id="drop_family"> 
+					</select>
+				</label>
+			</div>
+			
+			<div class="form-row">
+				<label>
+					<span>Choose Font Style</span>
+					<select id="drop_style"> 
+					</select>
+				</label>
+			</div>
+
+            <div class="form-row" id="x-cd" style="display: none;">
+               <label>
+                    <span>provide x-coordinate</span>
+                    <input id="tx" type="text" name="t-x" step="1" value="0" style="width: 100px;">px
+                </label> 
+            </div>
+
+            <div class="form-row" id="y-cd" style="display: none;">
+               <label>
+                    <span>provide y-coordinate</span>
+                    <input id="ty" type="text" name="t-y" step="1" value="0" style="width: 100px;">px
+                </label> 
+            </div>
+
+            <div class="form-row" id="border-select" style="display: none;">
+                <label><span>Border visible?</span></label>
+                <div class="form-radio-buttons">
+
+                    <div>
+                        <label>
+                            <input type="radio" name="radio1" onclick="setBorder(this)" value="yes"/>
+                            <span>yes</span>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>
+                            <input type="radio" name="radio1" onclick="resetBorder(this)" value="no"/>
+                            <span>no</span>
+                        </label>
+                    </div>
+
+                </div>
+                <br>
+            </div>
+
+        </form>
+    </div>
+
+
+</body>
+
+<script type="text/javascript">
+
+				var can_width;
+				var can_height;
+				function onSelectRes(){
+					var asp=document.getElementById("aspect_ratio");
+                    var str1=asp.options[asp.selectedIndex].value;
+                    var r=document.getElementById("res");
+                    var str2=r.options[r.selectedIndex].value;
+                    var arr=str1.split(':');
+                    // console.log(arr);
+                    var mul_width=(parseInt(arr[0]))/(parseInt(arr[0])+parseInt(arr[1]));
+                    // console.log(mul_width);
+                    var mul_height=1-mul_width;
+                    // console.log(mul_height);
+                    var SD,HD,SHD;
+                    var inv=1/mul_width;
+                    // console.log(inv);
+                    if(mul_width==0.5){
+                    	SD=800*inv;
+                    	HD=1200*inv;
+                    	SHD=1800*inv;
+                    }
+                    else{
+                    	SD=720*inv;
+                    	HD=1280*inv;
+                    	SHD=1920*inv;
+                    }
+                    switch(parseInt(str2)){
+                    	case 1:
+                    		can_width=(mul_width*SD);
+                    		can_height=(mul_height*SD);
+                    		break;
+                    	case 2:
+                    		can_width=(mul_width*HD);
+                    		can_height=(mul_height*HD);
+                    		break;
+                    	case 3:
+                    		can_width=(mul_width*SHD);
+                    		can_height=(mul_height*SHD);
+                    		break;
+                    }
+                    // console.log(can_width);
+                    // console.log(can_height);
+                 }
+                    
+
+				var origin;
+				var border_flag=1;
+				function setBorder(){
+					border_flag=1;
+					document.getElementById("tx").value=""+(origin.position.left+1);
+                    document.getElementById("ty").value=""+(origin.position.top+1);
+					$("#image1").css('border','2px solid #000000');
+				}
+
+				function resetBorder(){
+					border_flag=0;
+					//document.getElementById("tx").value=""+(origin.position.left);
+                    //document.getElementById("ty").value=""+(origin.position.top);
+					$("#image1").css('border','0px solid #000000');
+				}
+
+                var bgVal="";
+                function handleClick1(){
+                    document.getElementById("bgtype").style.display="block";
+                    bgVal='yes';
+                }
+
+                function handleClick2(){
+                    document.getElementById("bgtype").style.display="none";
+                    document.getElementById("vurl").style.display="none";
+                    document.getElementById("iurl").style.display="none";
+                    document.getElementById("col").style.display="none";
+                    bgVal='no';
+                }
+
+                function handleClick3(){
+                    var e=document.getElementById("bgselect");
+                    var str=e.options[e.selectedIndex].value;
+                    if(str=='video'){
+                        document.getElementById("vurl").style.display="block";
+                        document.getElementById("iurl").style.display="none";
+                        document.getElementById("col").style.display="none";
+                    }
+                    if(str=='image'){
+                        document.getElementById("iurl").style.display="block";
+                        document.getElementById("vurl").style.display="none";
+                        document.getElementById("col").style.display="none";   
+                    }
+                    if(str=='color'){
+                        document.getElementById("col").style.display="block";
+                        document.getElementById("vurl").style.display="none";
+                        document.getElementById("iurl").style.display="none";
+                    }
+                }
+
+    $(document).ready(function () {
+
+    		function showFonts(items){
+					$.each(items,function(i,p){
+						$("#drop_family").append($('<option></option>').val(p.family).html(p.family));
+					});
+			} 
+
+			var fonts;
+							
+			var fonturl="https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyBM4X4ueetanTCPdZ54yxuZm_SW2QUVuQE";
+			$.ajax({
+				'url': fonturl,
+				'method': 'GET',
+				'datatype': 'json',
+				error: function(data){
+					console.log(data);
+				},			
+				success: function(data){
+					//console.log(data);
+					fonts=data;
+					showFonts(data.items);
+				}
+			});
+
+			$("#drop_family").on('change',function(){
+				$('#drop_style').empty();
+				$.each(fonts.items,function(i,p){
+					if(this.family==$("#drop_family").val()){
+						$.each(this.files,function(key,value1){
+							var value="";
+
+							switch(parseInt(key[0])){
+			                 	case 1:
+			                 		value="Thin";
+			                 		break;
+			                 	case 2:
+			 	  					value="Extra Thin";
+			 						break;
+			                 	case 3:
+			 	  					value="Light";
+			 						break;
+			 					case 4:
+			 	  					value="Normal";
+			 						break;
+			 					case 5:
+			 	  					value="Medium";
+			 						break;
+			 					case 6:
+			 	  					value="Semi Bold";
+			 						break;
+			 					case 7:
+			 	  					value="Bold";
+			 						break;
+			 					case 8:
+			 	  					value="Extra Bold";
+			 						break;
+			 					case 9:
+			 	  					value="Black";
+			 						break;
+			                 	default:
+			                 		value=key[0].toUpperCase()+key.substring(1);
+			                 		break;	
+			                 }
+			                 if(key.length!=3 && (parseInt(key[0])<=9)){
+			                 	value = value+ " " +key.substring(3);
+			                 }
+							$("#drop_style").append($('<option></option>').val(key).html(value));
+						});	
+					}
+				});
+			});
+
+			function onSelectCase(text){
+					//console.log(text);
+					var str=document.getElementById('text_case').options.selectedIndex;
+                    switch(parseInt(str)){
+                    	case 0:
+                    		break;
+                    	case 1:
+                    		text=text.toLowerCase();
+                    		break;
+                    	case 2:
+                    		text=text.toUpperCase();
+                    		break;
+                    	case 3:
+                    		var retStr="";
+                    		var arr=text.split(" ");
+                    		for (var i = 0; i < arr.length; i++) {
+                    			arr[i]=arr[i][0].toUpperCase()+arr[i].substring(1);
+                    		}
+                    		for (var i = 0; i < arr.length; i++) {
+                    			retStr=retStr+arr[i]+" ";
+                    		}
+                    		text=retStr;
+                    		break;
+                    	default:
+                    		break;
+                    }
+                    
+                    return text;	
+			}
+
+
+             $("#sub").click(function(){
+             	onSelectRes();
+                var curDate=new Date();
+                var cur=curDate.getHours()+"-"+curDate.getMinutes()+"-"+curDate.getSeconds()+"-";
+                 var curTime=cur+""+curDate.getDate()+"-"+curDate.getFullYear();
+                 //alert(curTime);
+                 var file = new Object();
+                 file.name = $('#file_name').val();
+                 //console.log(document.getElementById('text_case').options);
+                 file.type_case=document.getElementById('text_case').options[document.getElementById('text_case').selectedIndex].innerHTML;
+                 file.canvas_size_width=(($('#canvas_size_width').val())/100)*can_width;
+                 file.canvas_size_height=(($('#canvas_size_height').val())/100)*can_height;
+                 file.text_align=$('#text_align').val();
+                 file.text_padding=$('#text_padding').val();
+                 file.max_line=$('#max_line').val();
+                 file.get_between_lines=$('#get_between_lines').val();
+                 file.bg_type_val="";
+                 if(bgVal=='yes'){
+                    file.bg_type=$('#bgselect').val();
+                    if(file.bg_type=='color')
+                        file.bg_type_val=$('#color').val();
+                    else if(file.bg_type=='video')
+                        file.bg_type_val=$('#video').val();
+                    else if(file.bg_type=='image')
+                        file.bg_type_val=$('#image').val();
+                 }
+                 file.textval=onSelectCase($('#text_val').val());
+                 file.font_size=$('#font_size').val();
+                 file.font=$('#drop_family').val();
+                 var ttf_str=$('#drop_family').val().replace(" ", "").toLowerCase();
+                 var ttf_str2=$('#drop_family').val().replace(" ", "");
+                 var ttf=$('#drop_style').val();
+                 try{
+                 var ttf_int=parseInt(ttf[0]);
+                 switch(ttf_int){
+                 	case 1:
+                 		if(ttf.length!=3)
+                 			ttf="Thin"+ttf[3].toUpperCase().substring(4);
+                 		else
+                 			ttf="Thin";
+                 		break;
+                 	case 2:
+                 		if(ttf.length!=3)
+                 			ttf="Extra Light"+ttf[3].toUpperCase().substring(4);
+                 		else
+                 			ttf="Extra Light";
+                 		break;
+                 	case 3:
+                 		if(ttf.length!=3)
+                 			ttf="Light"+ttf[3].toUpperCase().substring(4);
+                 		else
+                 			ttf="Light";
+                 		break;
+                 	case 4:
+                 		if(ttf.length!=3)
+                 			ttf="Normal"+ttf[3].toUpperCase().substring(4);
+                 		else
+                 			ttf="Normal";
+                 		break;
+                 	case 5:
+                 		if(ttf.length!=3){
+                 			ttf="Medium"+ttf[3].toUpperCase().substring(4);
+                 		}
+                 		else{
+                 			ttf="Medium";
+                 		}
+                        break;
+                 	case 6:
+                 		if(ttf.length!=3)
+                 			ttf="Semi Bold"+ttf[3].toUpperCase().substring(4);
+                 		else
+                 			ttf="Semi Bold";
+                 		break;
+                 	case 7:
+                 		if(ttf.length!=3)
+                 			ttf="Bold"+ttf[3].toUpperCase().substring(4);
+                 		else
+                 			ttf="Bold";
+                 		break;
+                 	case 8:
+                 		if(ttf.length!=3)
+                 			ttf="Extra Bold"+ttf[3].toUpperCase().substring(4);
+                 		else
+                 			ttf="Extra Bold";
+                 		break;
+                 	case 9:
+                 		if(ttf.length!=3)
+                 			ttf="Black"+ttf[3].toUpperCase().substring(4);
+                 		else
+                 			ttf="Black";
+                 		break;
+                 	default:
+                 		ttf=ttf[0].toUpperCase()+ttf.substring(1);
+                 }
+        		 	//ttf=ttf[0].toUpperCase()+ttf.substring(1);
+				 file.font_ttf="googlefonts/"+ttf_str+"/"+ttf_str2+"-"+ttf+".ttf";
+			}
+			catch(e){
+				alert("Please select a font type and font style");
+			}
+                 console.log(file);
+
+                 var urlstr="http://video.gistai.com:60050/animation?finalFileName="+file.name+"-"+curTime+"&finalImagePath=/var/www/createvideo/ajax/quintimages/&textType=StoryName&textName=Carpet&typeCase="+file.type_case+"&textAnimationType=wipe&canvasSize="+file.canvas_size_width+","+file.canvas_size_height+"&textAlign="+file.text_align+"&padding="+file.text_padding+"&maxLine="+file.max_line+"&getbetweentwoline="+file.get_between_lines+"&bgyn&="+bgVal+"&bgtype="+file.bg_type+"&bg="+file.bg_type_val+"&textBgyn=no&textBgtype=color&textbgoption=3&textBgColor=0,0,0,0.6&textBgGradient=none&text="+file.textval+"&fontFile="+file.font_ttf+"&fontName="+file.font+"&fontSize="+file.font_size+"&textColor=255,255,255,1&strokeVisible=no&strokeWidth=0&strokeColor=0,0,0,0&shadowyn=no&shadowColor=0,0,0,0&shadowX=0&shadowY=0&shadowBlur=0&highlightText=&HLFontFile=HelveticaNeueBold.ttf&HLFontName=Helvetica%20Neue&HLFontSize=25&HLTextColor=255,255,255,1&HLStrokeVisible=no&HLStrokewidth=0&HLStrokeColor=0,0,0,0&HLShadowyn=no&HLShadowColor=0,0,0,0&HLShadowX=0&HLShadowY=0&HLShadowBlur=0&decorationyn=no&decoration=[[u%270%27,%20u%270%27,%20u%270%27,%20u%27255,255,255,1%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27],%20[u%270%27,%20u%270%27,%20u%270%27,%20u%27255,255,255,1%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27],%20[u%270%27,%20u%270%27,%20u%270%27,%20u%27255,255,255,1%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27],%20[u%270%27,%20u%270%27,%20u%270%27,%20u%27255,255,255,1%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27]]%3C__%3E[[u%270%27,%20u%270%27,%20u%270%27,%20u%27255,255,255,1%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27],%20[u%270%27,%20u%270%27,%20u%270%27,%20u%27255,255,255,1%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27],%20[u%270%27,%20u%270%27,%20u%270%27,%20u%27255,255,255,1%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27],%20[u%270%27,%20u%270%27,%20u%270%27,%20u%27255,255,255,1%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27]]%3C__%3E[[u%270%27,%20u%270%27,%20u%270%27,%20u%27255,255,255,1%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27],%20[u%270%27,%20u%270%27,%20u%270%27,%20u%27255,255,255,1%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27],%20[u%270%27,%20u%270%27,%20u%270%27,%20u%27255,255,255,1%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27],%20[u%270%27,%20u%270%27,%20u%270%27,%20u%27255,255,255,1%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27]]%3C__%3E[[u%270%27,%20u%270%27,%20u%270%27,%20u%27255,255,255,1%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27],%20[u%270%27,%20u%270%27,%20u%270%27,%20u%27255,255,255,1%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27],%20[u%270%27,%20u%270%27,%20u%270%27,%20u%27255,255,255,1%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27],%20[u%270%27,%20u%270%27,%20u%270%27,%20u%27255,255,255,1%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27]]%3C__%3E[[u%270%27,%20u%270%27,%20u%270%27,%20u%27255,255,255,1%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27],%20[u%270%27,%20u%270%27,%20u%270%27,%20u%27255,255,255,1%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27],%20[u%270%27,%20u%270%27,%20u%270%27,%20u%27255,255,255,1%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27],%20[u%270%27,%20u%270%27,%20u%270%27,%20u%27255,255,255,1%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27,%20u%27%27]]"
+                 //console.log("http://video.gistai.com/createvideo/ajax/quintimages/"+file.name+"-"+curTime);
+
+                 // var urlstr2="http://video.gistai.com:60050/animation?finalFileName=7d68ff449f4980655d3129121847100e_1495706280t_0_0_title_844&finalImagePath=/var/www/createvideo/ajax/quintimages/&textType=StoryName&textName=Carpet&typeCase=lower&textAnimationType=wipe&canvasSize="+file.canvas_size_width+","+file.canvas_size_height+"&textAlign=center&padding=10&maxLine=2&getbetweentwoline=-10&bgyn&=no&bgtype=video&bg=http://api3.gistai.com/Intro-Outro/backgrounds/clip3-line&textBgyn=no&textBgtype=color&textbgoption=3&textBgColor=0,0,0,0.6&textBgGradient=none&text=%E0%A4%87%E0%A4%B8%20%E0%A4%AE%E0%A4%BE%E0%A4%AE%E0%A4%B2%E0%A5%87%20%E0%A4%AE%E0%A5%87%E0%A4%82%20%E0%A4%B9%E0%A5%88%E0%A4%82%20%E0%A4%97%E0%A4%82%E0%A4%AD%E0%A5%80%E0%A4%B0%E0%A4%87%E0%A4%B8%20%E0%A4%AE%E0%A4%BE%E0%A4%AE%E0%A4%B2%E0%A5%87%20%E0%A4%AE%E0%A5%87%E0%A4%82%20%E0%A4%B9%E0%A5%88%E0%A4%82%20%E0%A4%97%E0%A4%82%E0%A4%AD%E0%A5%80%E0%A4%B0%2C%20%E0%A4%85%E0%A4%A8%E0%A5%81%E0%A4%B7%E0%A5%8D%E0%A4%95%E0%A4%BE%20%E0%A4%95%E0%A5%8B%20%E0%A4%A8%E0%A4%B9%E0%A5%80%E0%A4%82%20%E0%A4%95%E0%A4%B0%E0%A4%A8%E0%A5%87%20%E0%A4%A6%E0%A5%80%20%E0%A4%A5%E0%A5%80%20%E0%A4%B6%E0%A4%BE%E0%A4%A6%E0%A5%80&fontFile=HelveticaNeueBold.ttf&fontName=Helvetica Neue&fontSize=20&textColor=255,255,255,1&strokeVisible=no&strokeWidth=0&strokeColor=0,0,0,0&shadowyn=no&shadowColor=0,0,0,0&shadowX=0&shadowY=0&shadowBlur=0&highlightText=&HLFontFile=HelveticaNeueBold.ttf&HLFontName=Helvetica Neue&HLFontSize=25&HLTextColor=255,255,255,1&HLStrokeVisible=no&HLStrokewidth=0&HLStrokeColor=0,0,0,0&HLShadowyn=no&HLShadowColor=0,0,0,0&HLShadowX=0&HLShadowY=0&HLShadowBlur=0&decorationyn=no&decoration=[[u'0', u'0', u'0', u'255,255,255,1', u'', u'', u'', u'', u'', u''], [u'0', u'0', u'0', u'255,255,255,1', u'', u'', u'', u'', u'', u''], [u'0', u'0', u'0', u'255,255,255,1', u'', u'', u'', u'', u'', u''], [u'0', u'0', u'0', u'255,255,255,1', u'', u'', u'', u'', u'', u'']]<__>[[u'0', u'0', u'0', u'255,255,255,1', u'', u'', u'', u'', u'', u''], [u'0', u'0', u'0', u'255,255,255,1', u'', u'', u'', u'', u'', u''], [u'0', u'0', u'0', u'255,255,255,1', u'', u'', u'', u'', u'', u''], [u'0', u'0', u'0', u'255,255,255,1', u'', u'', u'', u'', u'', u'']]<__>[[u'0', u'0', u'0', u'255,255,255,1', u'', u'', u'', u'', u'', u''], [u'0', u'0', u'0', u'255,255,255,1', u'', u'', u'', u'', u'', u''], [u'0', u'0', u'0', u'255,255,255,1', u'', u'', u'', u'', u'', u''], [u'0', u'0', u'0', u'255,255,255,1', u'', u'', u'', u'', u'', u'']]<__>[[u'0', u'0', u'0', u'255,255,255,1', u'', u'', u'', u'', u'', u''], [u'0', u'0', u'0', u'255,255,255,1', u'', u'', u'', u'', u'', u''], [u'0', u'0', u'0', u'255,255,255,1', u'', u'', u'', u'', u'', u''], [u'0', u'0', u'0', u'255,255,255,1', u'', u'', u'', u'', u'', u'']]<__>[[u'0', u'0', u'0', u'255,255,255,1', u'', u'', u'', u'', u'', u''], [u'0', u'0', u'0', u'255,255,255,1', u'', u'', u'', u'', u'', u''], [u'0', u'0', u'0', u'255,255,255,1', u'', u'', u'', u'', u'', u''], [u'0', u'0', u'0', u'255,255,255,1', u'', u'', u'', u'', u'', u'']]"
+ 
+                 
+
+                 function drawImage(){
+                        var img=document.getElementById('image1');
+                        var x=$('#tx').val();
+                        var y=$('#ty').val();
+                        $("#image1").css("position","absolute");
+                        $("#image1").css("top",y+"px");
+                        $("#image1").css("left",x+"px");
+                    }
+
+                 function setImage(){    
+                    $("#image1").on('load',function(){
+                        $(this).draggable({
+                            containment: "parent",
+                            stop: function(event,ui){
+                            	if(border_flag==1){
+                            		origin=ui;
+                                	document.getElementById("tx").value=""+(ui.position.left+1);
+                                	document.getElementById("ty").value=""+(ui.position.top+1);
+                                }
+                                else{
+                                	document.getElementById("tx").value=""+ui.position.left;
+                                	document.getElementById("ty").value=""+ui.position.top;
+                                }
+                            }
+                        });
+                        drawImage();
+                    });
+                }
+
+                    
+
+                    $("#x-cd").on('change',function(){
+                        //console.log('x changed');
+                        drawImage();
+                    });
+
+
+                    $("#y-cd").on('change',function(){
+                        //console.log('y changed');
+                        drawImage();
+                    });
+
+                 $.ajax({
+                     'url': urlstr,
+                     'method': 'GET',
+                     'datatype': 'json',
+                     error : function(data){
+                        console.log("error");
+                        console.log(data);
+                     },
+                     success : function(data){
+                        $("#image1").attr("src","http://video.gistai.com/createvideo/ajax/quintimages/"+file.name+"-"+curTime);
+                        $("#x-cd").css("display","block");
+                        $("#y-cd").css("display","block");
+                        $("#border-select").css("display","block");
+                        setImage();    
+                     }
+                 });
+ 
+                
+             });
+         });
+
+</script>
+</html>
