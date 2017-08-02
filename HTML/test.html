@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>GreenScreen Removal</title>
+    <script src="libraries/p5.js"></script>
+    <script src="libraries/p5.dom.js"></script>
+    <script src="libraries/p5.sound.js"></script>
+    <script src="libraries/seriously.js"></script>
+    <script src="libraries/effects/seriously.blur.js"></script>
+    <script src="libraries/effects/seriously.chroma.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+    <style>
+    
+    </style>
+
+  </head>
+
+  <body>
+
+  </body>
+  <script type="text/javascript">
+    var video;
+    var canvas;
+    // $(window).on('load',function(){
+    function setup() {
+    		canvas=createCanvas(640,480,WEBGL);
+    		canvas.id('p5canvas');
+    		video=createCapture(VIDEO);
+    		video.size(640,480);
+    		video.id('p5video');
+    		var seriously = new Seriously();
+
+	     var src = seriously.source('#p5video');
+	     var target = seriously.target('#p5canvas');
+
+	        var chroma = seriously.effect('chroma');
+	        chroma.source = src;
+	        target.source = chroma;
+	        var r = 45 / 255;
+	        var g = 113 / 255;
+	        var b = 188 / 255;
+	        chroma.screen = [r,g,b,1];
+          seriously.go();
+      }
+  </script>
+</html>
+
+

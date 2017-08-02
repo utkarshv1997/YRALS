@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>GreenScreen Removal</title>
+    <script src="libraries/p5.js"></script>
+    <script src="libraries/p5.dom.js"></script>
+    <script src="libraries/p5.sound.js"></script>
+    <script src="libraries/seriously.js"></script>
+    <script src="libraries/effects/seriously.blur.js"></script>
+    <script src="libraries/effects/seriously.chroma.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <style>
+    	
+    </style>
+
+  </head>
+
+  <body>
+  	<div class="container-fluid">
+	  	<div class="row">
+			<div class="col-sm-6 col-xs-6 col-md-6">
+			  	<div id="videodiv">
+			  		<video id="ovideo" autoplay src="upload/cnnedit.mp4" width="100%" height="auto"></video>
+			  	</div>
+			</div>
+			<div class="col-sm-6 col-xs-6 col-md-6">
+			  	<div id="canvasdiv">
+			  		<video id="evideo" autoplay src="upload/evid.mp4" width="100%" height="auto"></video>
+			  	</div> 
+			</div>
+	 	</div>
+ 	</div>
+ 	
+  </body>
+  <script type="text/javascript">
+  	var slider;
+  	var flag=0;
+  	var ovid=document.getElementById('ovideo');
+  	var evid=document.getElementById('evideo');
+  	ovid.onplay = function(){
+  		evid.muted=true;
+  		evid.play();	
+  	}; 
+
+  	ovid.onpause = function(){
+  		evid.pause();
+  	};
+
+  	ovid.ended = function(){
+  		evid.currentTime=0;
+  		evid.load();
+  	};
+	
+   //  function setup() {
+	  //       var x=document.createElement("VIDEO");
+	        
+	  //       x.setAttribute("width","100%");
+	  //       x.setAttribute("height","100%"); 
+	  //       x.setAttribute("controls","controls");
+	  //       // x.setAttribute("autoplay","autoplay");
+	  //       x.setAttribute("id","ovideo");
+	  //       x.setAttribute("src","upload/cnnedit.mp4");
+	  //       document.getElementById('videodiv').appendChild(x);
+		    
+
+	  //      var a,b,canvas,canvas1;
+   //      $("#ovideo").on('loadedmetadata',function(){
+        
+   //      	a=this.videoWidth;
+   //      	b=this.videoHeight;
+   //      	console.log(a+" , "+b+ " , "+window.devicePixelRatio+"\n");
+			// var w = $("#videodiv").width();
+		 //    var h = $("#videodiv").height();
+		 //    $("#vidiv").removeClass('col-md-6').addClass('col-md-4');
+		 //    $("#vidiv").removeClass('col-xs-6').addClass('col-xs-4');
+		 //    $("#vidiv").removeClass('col-sm-6').addClass('col-sm-4');
+		 //    console.log(w+" , "+h+ " , "+window.devicePixelRatio+"\n");
+	  //       canvas = createCanvas(a,b,WEBGL);
+	  //       canvas.id('ogcanvas');
+	  //       canvas.style('z-index',10);
+	  //       // canvas.style('margin-left','5%');
+	  //       //canvas.style('border','2px solid black');
+	  //       canvas.style('background-image','url("g20.png")');
+	  //       // canvas.style('background-repeat','no-repeat');
+	  //       // canvas.style('background-size','cover');
+	  //       canvas.parent('canvasdiv');
+
+	  //       console.log(canvas.width+" "+canvas.height);
+
+	  //       // canvas1 = createCanvas(w*1.3,h*1.3,WEBGL);
+	  //       // canvas1.id('incanvas');
+	  //       // canvas1.parent('incanvasdiv');
+	        
+	  // //       var c=document.getElementById('ogcanvas');
+			// // var ctx=c.getContext('WEBGL');
+			// // ctx.fillStyle='blue';
+			// // ctx.fillRect(10,10,50,50);
+			// // ctx.globalCompositeOperation='source-in';
+			// // ctx.beginPath();
+			// // ctx.fillStyle='red';
+			// // ctx.arc(50,50,30,0,2*Math.PI);
+			// // ctx.fill();
+
+			// // slider= createSlider(1,2,1.30,0.05);		
+			// // slider.parent('videodiv');	
+			// // slider.id('slider');
+			// // var mul=document.getElementById('slider').value;
+		
+			// // var s = document.getElementById('#slider');
+			// // s.min=1;
+			// // s.max=2;
+			// // s.step=0.1;
+			// // var mul=s.value;
+
+	  //       var seriously = new Seriously();
+	  // //       var seriously1 = new Seriously();
+
+	  // //       var src1= seriously1.source('#ovideo');
+	  // //       var target1 = seriously1.target('#incanvas');
+	  // //       var chroma1 = seriously1.effect('chroma');
+	  // //       chroma1.source = src1;
+	  // //       target1.source = chroma1;
+			// // target1.width = a;
+			// // target1.height = b;
+   // //          var r1 = 87 / 255;
+   // //          var g1 = 154 / 255;
+   // //          var b1 = 76 / 255;
+	  // //       chroma1.screen = [r1,g1,b1,1];
+
+	  //       var src = seriously.source('#ovideo');
+	  //       var target = seriously.target('#ogcanvas');
+	  //       // var target1 = seriously.target('#incanvas');
+
+	  //       var chroma = seriously.effect('chroma');
+	  //       chroma.source = src;
+	  //       target.source = chroma;
+			// target.width = a;
+			// target.height = b;
+   //          var r = 45 / 255;
+   //          var g = 107 / 255;
+   //          var b = 49 / 255;
+	  //       chroma.screen = [r,g,b,1];
+	  //       x.setAttribute("autoplay","autoplay");
+	  //       seriously.go();
+			
+	  //       // seriously1.go();
+			
+   //  });
+
+   //  }
+
+    
+
+  </script>
+</html>

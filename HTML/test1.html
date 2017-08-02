@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>GreenScreen Removal</title>
+	
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link href="libraries/jquery.filer.css" type="text/css" rel="stylesheet" />
+	<link href="libraries/jquery.filer-dragdropbox-theme.css" type="text/css" rel="stylesheet" />
+    <style>
+    	
+    </style>
+
+  </head>
+
+  <body>
+  	<div class="container-fluid">
+	  	<div class="row">
+		  	<div id="vidiv" class="col-sm-6 col-xs-6 col-md-6">
+		  		<div id="videodiv" style="float: left;width: 100%;"></div>
+		  		<button class="stop">Stop</button>
+		  	</div>
+		  	<div class="col-sm-6 col-md-6 col-xs-6">
+		  		<div id="canvasdiv" style="float: left;">
+		  			<canvas id="ogcanvas" style="display: none; z-index: 10; background: url('upload/fimg.jpg');background-repeat: no-repeat;background-size: cover;"></canvas>
+		  			<canvas id="bgcanvas" style="display: none; z-index: 10;"></canvas>
+		  		</div> 
+		 	</div>
+	 		<div class="col-sm-6 col-md-6 col-xs-6">
+		  		<div id="incanvasdiv" style="float: left;"></div> 
+		 	</div>
+	 	</div>
+	 	<div class="row">
+	 		<canvas id="mycanvas" style="display: none;"></canvas>
+	 		<!-- <audio id="audio" style="display: none;"></audio> -->
+	 	</div>
+		<div class="row">
+		 <input type = "file" multiple = "multiple" 
+            name = "files[]" class = "input2" id="image1">
+			<input type = "file" multiple = "multiple" 
+            name = "files[]" class = "input2" id="image2">
+			<input type = "file" multiple = "multiple" 
+            name = "files[]" class = "input2" id="image3">
+		</div>
+ 	</div>
+ 	
+  </body>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+	<script type='text/javascript' src='https://code.jquery.com/jquery-1.11.3.min.js'></script>
+    <script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
+	<script src="https://cdn.webrtc-experiment.com/RecordRTC/Whammy.js"></script>
+	<script src="https://cdn.webrtc-experiment.com/RecordRTC/CanvasRecorder.js"></script>
+    <script src="libraries/p5.js"></script>
+    <script src="libraries/p5.dom.js"></script>
+    <script src="libraries/p5.sound.js"></script>
+    <script src="libraries/seriously.js"></script>
+    <script src="libraries/effects/seriously.blur.js"></script>
+    <script src="libraries/effects/seriously.chroma.js"></script>
+    <script src="libraries/jquery.filer.js"></script>
+  <script type="text/javascript">
+  	var slider;
+  	var flag=0;
+  	var img;
+
+  	function getPixels3d(gl) {
+	  var canvas = gl.canvas
+	  var height = canvas.height
+	  var width  = canvas.width
+	  var buffer = new Uint8Array(width * height * 4)
+
+	  gl.readPixels(0, 0
+	    , canvas.width
+	    , canvas.height
+	    , gl.RGBA
+	    , gl.UNSIGNED_BYTE
+	    , buffer
+	  )
+
+	  return buffer
+	};
+
+  	function webglToCanvas2d(webgl, canvas2D) {
+
+	  var outCanvas = canvas2D ? canvas2D.canvas || canvas2D : document.createElement('canvas');
+	  var outContext = outCanvas.getContext('2d');
+	  var outImageData;
+
+	  webgl = webgl instanceof WebGLRenderingContext ? webgl : webgl.getContext('webgl') || webgl.getContext('experimental-webgl');
+
+	  outCanvas.width = webgl.canvas.width;
+	  outCanvas.height = webgl.canvas.height;
+	  outImageData = outContext.getImageData(0, 0, outCanvas.width, outCanvas.height);
+
+	  outImageData.data.set(new Uint8ClampedArray(getPixels3d(webgl).buffer));
+	  outContext.putImageData(outImageData, 0, 0);
+	  outContext.translate(0, outCanvas.height);
+	  outContext.scale(1, -1);
+	  outContext.drawImage(outCanvas, 0, 0);
+	  outContext.setTransform(1, 0, 0, 1, 0, 0);
+
+	  return outCanvas;
+	};
+  	
+  	function preload(){
+  		img = loadImage('vbg.jpg');
+  	}
+	
+    function setup() {
+	        var x=document.createElement("VIDEO");
+	        
+	        x.setAttribute("width","100%");
+	        x.setAttribute("height","100%"); 
+	        x.setAttribute("controls","controls");
+	        // x.setAttribute("autoplay","autoplay");
+	        x.setAttribute("id","ovideo");
+	        x.setAttribute("src","upload/out.mp4");
+	        document.getElementById('videodiv').appendChild(x);
+		    
+
+	       var a,b,ctx,canvas;
+        $("#ovideo").on('loadedmetadata',function(){
+        
+        	a=this.videoWidth;
+        	b=this.videoHeight;
+        	console.log(a+" , "+b+ " , "+window.devicePixelRatio+"\n");
+			var w = $("#videodiv").width();
+		    var h = $("#videodiv").height();
+		    $("#vidiv").removeClass('col-md-6').addClass('col-md-4');
+		    $("#vidiv").removeClass('col-xs-6').addClass('col-xs-4');
+		    $("#vidiv").removeClass('col-sm-6').addClass('col-sm-4');
+		    console.log(w+" , "+h+ " , "+window.devicePixelRatio+"\n");
+	        ctx = document.getElementById("ogcanvas");
+	        canvas=ctx.getContext('experimental-webgl');
+	        // canvas.id('ogcanvas');
+	        // canvas.style('z-index',10);
+	        // canvas.style('margin-left','5%');
+	        //canvas.style('border','2px solid black');
+	        // canvas.style('background-image','url("upload/fimg.jpg")');
+	        // canvas.style('background-repeat','no-repeat');
+	        // canvas.style('background-size','cover');
+	        // canvas.parent('canvasdiv');
+	        //var bgcanvas=document.getElementById("bgcanvas");
+	        //var ctx1=bgcanvas.getContext('2d');
+	        //ctx1.drawImage(ctx,0,0,ctx.width,ctx.height);
+	        $("#ogcanvas").show();
+	        //$("#bgcanvas").show();
+	        // canvas.style('display','block');
+
+	        console.log(canvas.width+" "+canvas.height);
+	        
+	        console.log("canvas called...\n");
+
+	   //      navigator.getUserMedia = navigator.getUserMedia ||
+    //                      navigator.webkitGetUserMedia ||
+    //                      navigator.mozGetUserMedia;
+	   //       navigator.getUserMedia({ audio: true }, function(stream) {
+			 //     var audio = document.createElement('audio');
+			 //     audio.muted = true;
+			 //     audio.volume = 0;
+			 //     audio.src = URL.createObjectURL(stream);
+			 //     console.log("audio called...\n");
+			 //     recordAudio = RecordRTC(stream, {
+			 //         type: 'audio',
+			 //         recorderType: StereoAudioRecorder
+			 //    });
+			 // }
+			 //     , function(error) { log( JSON.stringify ( error ) ); });
+
+	         
+
+
+
+	        // canvas1 = createCanvas(w*1.3,h*1.3,WEBGL);
+	        // canvas1.id('incanvas');
+	        // canvas1.parent('incanvasdiv');
+	        
+	  //       var c=document.getElementById('ogcanvas');
+			// var ctx=c.getContext('WEBGL');
+			// ctx.fillStyle='blue';
+			// ctx.fillRect(10,10,50,50);
+			// ctx.globalCompositeOperation='source-in';
+			// ctx.beginPath();
+			// ctx.fillStyle='red';
+			// ctx.arc(50,50,30,0,2*Math.PI);
+			// ctx.fill();
+
+			// slider= createSlider(1,2,1.30,0.05);		
+			// slider.parent('videodiv');	
+			// slider.id('slider');
+			// var mul=document.getElementById('slider').value;
+		
+			// var s = document.getElementById('#slider');
+			// s.min=1;
+			// s.max=2;
+			// s.step=0.1;
+			// var mul=s.value;
+
+	        var seriously = new Seriously();
+	        // var seriously1 = new Seriously();
+
+	  //       var src1= seriously1.source('#ovideo');
+	  //       var target1 = seriously1.target('#incanvas');
+	  //       var chroma1 = seriously1.effect('chroma');
+	  //       chroma1.source = src1;
+	  //       target1.source = chroma1;
+			// target1.width = a;
+			// target1.height = b;
+   //          var r1 = 87 / 255;
+   //          var g1 = 154 / 255;
+   //          var b1 = 76 / 255;
+	  //       chroma1.screen = [r1,g1,b1,1];
+
+	        var src = seriously.source('#ovideo');
+	        var target = seriously.target('#ogcanvas');
+	        // var target1 = seriously.target('#incanvas');
+
+	        var chroma = seriously.effect('chroma');
+	        chroma.source = src;
+	        target.source = chroma;
+			target.width = a;
+			target.height = b;
+            var r = 18 / 255;
+            var g = 52 / 255;
+            var b = 13 / 255;
+	        chroma.screen = [r,g,b,1];
+	        seriously.go();
+	        
+	        //recorder.startRecording();
+			//recordAudio.startRecording();
+			//console.log(bgcanvas);
+			
+	        // seriously1.go();
+			
+    });
+
+    }
+	
+	$(document).ready(function() {
+    
+	$('.input2').filer({
+               limit: null,
+               maxSize: null,
+               extensions: null,
+               changeInput: '<div class="jFiler-input-dragDrop" id="imagevupload"><div class="jFiler-input-inner"><div class="jFiler-input-icon"><i class="icon-jfi-cloud-up-o"></i></div><div class="jFiler-input-text"><h3>Drag&Drop image here</h3> <span style="display:inline-block; margin: 15px 0">or</span></div><a class="jFiler-input-choose-btn blue">Select a image from your computer</a></div></div>',
+				showThumbs: true,
+				appendTo: null,
+				theme: "dragdropbox",
+					
+               templates: {
+                box: '<ul class="jFiler-item-list"></ul>',
+                item: '<li class="jFiler-item jFiler-itemFull">\
+                            <div class="jFiler-item-container jFiler-item-container_ipre">\
+                                <div class="jFiler-item-inner jFiler-item-container_iprebox">\
+                                    <div class="jFiler-item-thumb jFiler-item-thumbbig">\
+                                        <div class="jFiler-item-status"></div>\
+                                        {{fi-image}}\
+                                    </div>\
+                                    <div class="jFiler-item-assets jFiler-row">\
+                                        <ul class="list-inline pull-left">\
+                                            <li>{{fi-progressBar}}</li>\
+                                        </ul><div style="width:640px;float:left;">\
+										<p id="img_shape" style="width: 100%;"></p></div>\
+                                        <ul class="list-inline pull-right">\
+                                            <li><a class="icon-jfi-pencil jFiler-item-pencil-action"></a></li>\
+											<li><a class="icon-jfi-trash jFiler-item-trash-action"></a></li>\
+                                        </ul>\
+                                    </div>\
+                                </div>\
+                            </div>\
+                        </li>',
+                itemAppend: '<li class="jFiler-item">\
+                            <div class="jFiler-item-container">\
+                                <div class="jFiler-item-inner">\
+                                    <div class="jFiler-item-thumb">\
+                                        <div class="jFiler-item-status"></div>\
+                                        {{fi-image}}\
+                                    </div>\
+                                    <div class="jFiler-item-assets jFiler-row">\
+                                        <ul class="list-inline pull-left">\
+                                            <span class="jFiler-item-others">{{fi-icon}} {{fi-size2}}</span>\
+                                        </ul><div style="width:640px;float:left;">\
+							<p id="img_shape" style="width: 100%;"></p></div>\
+                                        <ul class="list-inline pull-right">\
+                                            <li><a class="icon-jfi-trash jFiler-item-trash-action"></a></li>\
+                                        </ul>\
+                                    </div>\
+                                </div>\
+                            </div>\
+                        </li>',
+                progressBar: '<div class="bar"></div>',
+                itemAppendToEnd: false,
+                removeConfirmation: false,
+                _selectors: {
+                    list: '.jFiler-item-list',
+                    item: '.jFiler-item',
+                    progressBar: '.bar',
+                    remove: '.jFiler-item-trash-action',
+                }
+            },
+					
+               uploadFile: {
+                  url: "./php/upload.php",
+                  data: {},
+                  type: 'POST',
+                  enctype: 'multipart/form-data',
+                  beforeSend: function(){},
+						
+                  success: function(data, el){
+                     var parent = el.find(".jFiler-jProgressBar").parent();
+                     el.find(".jFiler-jProgressBar").fadeOut("slow", function(){
+                        $("<div class = \"jFiler-item-others text-success\"><i class = \"icon-jfi-check-circle\"></i> Success</div>").hide().appendTo(parent).fadeIn("slow");    
+                     });
+                  },
+						
+                  error: function(el){
+                     var parent = el.find(".jFiler-jProgressBar").parent();
+							
+                     el.find(".jFiler-jProgressBar").fadeOut("slow", function(){
+                        $("<div class = \"jFiler-item-others text-error\"><i class =\"icon-jfi-minus-circle\"></i> Error</div>").hide().appendTo(parent).fadeIn("slow");    
+                     });
+                  },
+						
+                  statusCode: {},
+                  onProgress: function(){},
+               },
+					
+               dragDrop: {
+                  dragEnter: function(){},
+                  dragLeave: function(){},
+                  drop: function(){},
+               },
+					
+               addMore: true,
+               clipBoardPaste: true,
+               excludeName: null,
+               beforeShow: function(){return true},
+               onSelect: function(){},
+               afterShow: function(){},
+               onRemove: function(){},
+               onEmpty: function(){},
+					
+               captions: {
+                  button: "Choose Files",
+                  feedback: "Choose files To Upload",
+                  feedback2: "files were chosen",
+                  drop: "Drop file here to Upload",
+                  removeConfirmation: "Are you sure you want to remove this file?",
+						
+                  errors: {
+                     filesLimit: "Only {{fi-limit}} files are allowed to be uploaded.",
+                     filesType: "Only Images are allowed to be uploaded.",
+                     filesSize: "{{fi-name}} is too large! Please upload file up to {{fi-maxSize}} MB.",
+                     filesSizeAll: "Files you've choosed are too large! Please upload files up to {{fi-maxSize}} MB."
+                  }
+               }
+            });
+         });
+
+  </script>
+
+</html>
